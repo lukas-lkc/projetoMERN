@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 
 import userRoute from "./src/routes/user.route.js";
 import authRoute from "./src/routes/auth.route.js";
+import newsRoute from "./src/routes/news.route.js";
 
 dotenv.config();
 const app = express();
@@ -14,5 +15,6 @@ app.use(express.json()); //deixa a aplicação apta a receber e enviar arquivos 
 
 app.use("/user", userRoute);
 app.use("/auth", authRoute);
+app.use("/", newsRoute);
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));

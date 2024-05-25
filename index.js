@@ -15,6 +15,6 @@ app.use(express.json()); //deixa a aplicação apta a receber e enviar arquivos 
 
 app.use("/user", userRoute);
 app.use("/auth", authRoute);
-app.use("/", newsRoute);
+app.use("/news", newsRoute);
 
 app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));

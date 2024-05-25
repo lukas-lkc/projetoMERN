@@ -1,38 +1,38 @@
-import { text } from "express";
 import mongoose from "mongoose";
 
 const NewsSchema = new mongoose.Schema({
     title: {
         type: String,
-        require: true,
+        required: true,
     },
     text: {
         type: String,
-        require: true,
+        required: true,
     },
     banner: {
         type: String,
-        require: true,
+        required: true,
     },
     createdAt:{
         type: Date,
-        default: Date.now(),
+        default: Date.now(), //pega o horário local do servidor 
     },
     //pega como referenci o ID do usuário, da colection User. chave estrangeira
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User", //nome da coleção que está sendo exportada na classe User. 
-        require: true,
+        required: true,
     },
+    //os dois a baixo podem ser novas tabelas
     likes: {
         type: Array,
-        reqire: true,
+        required: true,
     },
     comments: {
         type: Array,
-        reqire: true,
+        required: true,
     },
-});
+},{versionKey: false});
 
 const News = mongoose.model("News", NewsSchema);
 

@@ -37,12 +37,53 @@ const create = async (req, res) => {
 
 const findAll = async (req, res) => {
     try {
-        const users = await userService.findAllService(); //função que vem do service
+        //para limitar a quantidade de resultados de uma chamada.
+        //essas duas variáveis serão parâmetros na URL
+        let { limit, offset } = req.query;
+        //tudo que vem da query/URL vem como string, então aqui transforma em número. 
+        limit = Number(limit);
+        offset = Number(offset);
+        //se o limit não for informado, por padrão será 5
+        if (!limit) {
+            limit = 10;
+        }
+        if (!offset) {
+            offset = 0;
+        }
+
+        const users = await userService.findAllService(offset, limit); //função que vem do service
+        const total = await userService.countUser();
+        const currentUrl = req.baseUrl;
+        console.log("total de usuários cadastrados: ", total);
+
+        const nextUsers = offset + limit;
+
+        const nextUrl = nextUsers < total ? `${currentUrl}?limit=${limit}&offset=${nextUsers}` : null;
+        console.log("url: ", nextUrl);
+
+        const previous = offset - limit < 0 ? null : offset - limit;
+        const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${previous}` : null;
+
+
         if (users.length === 0) {
             return res.status(400).send({ message: "There are no registered users" })
         }
 
-        res.send(users);
+        res.send({
+            nextUrl,
+            previousUrl,
+            limit,
+            offset,
+            total,
+            results: users.map(user => ({
+                id: user._id,
+                name: user.name,
+                userName: user.username,
+                userEmail: user.email,
+                userAvatar: user.avatar,
+                userBackground: user.background,
+            }))
+        });
     } catch (err) {
         res.status(500).send({ message: err.message }); //se o servidor estiver com algum erro será apresentado por aqui
     }

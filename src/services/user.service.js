@@ -4,7 +4,8 @@ import User from "../models/User.js";
 
 const create = (body) => User.create(body)
 
-const findAllService = () => User.find();
+const findAllService = (offset, limit) => User.find().find().sort({_id: -1}).skip(offset).limit(limit);
+const countUser = () => User.countDocuments();
 
 const findByIdService = (id) => User.findById(id);
 
@@ -35,6 +36,7 @@ export default {
     create,
     findAllService,
     findByIdService,
-    updateService
+    updateService,
+    countUser
     //deleteService,
 }

@@ -10,12 +10,15 @@ const findAllService = (offset, limit) => News.find().sort({_id: -1}).skip(offse
 
 const countNews = () => News.countDocuments();
 
+const findByIdService = (id) => News.findById(id)//.populate("user");
+
 //findOne() com sort(_id: -1) trás o último item da coleção.
 const topNewsService = () => News.findOne().sort({_id: -1}).populate("user");
 
 export {
     createService, 
     findAllService,
+    findByIdService,
     countNews,
     topNewsService
 }

@@ -1,4 +1,4 @@
-import { createService, findAllService, countNews, topNewsService } from "../services/news.service.js"
+import { createService, findAllService, findByIdService, countNews, topNewsService } from "../services/news.service.js"
 
 const create = async (req, res) => {
     try {
@@ -84,6 +84,29 @@ const findAll = async (req, res) => {
     }
 };
 
+const findById = async (req, res) => {
+    try {
+        const {id} = req.params; //pega o user da função anterior que vem do middleware, onde está sendo verificado se o user existe
+        const news = await findByIdService(id);
+
+        res.send({
+            news: {
+                id: news._id,
+                title: news.title,
+                text: news.text,
+                banner: news.banner,
+                likes: news.likes,
+                comments: news.comments,
+                name: news.user.name,
+                userName: news.user.username,
+                userAvatar: news.user.avatar,
+            }
+        });
+    } catch {
+        res.status(500).send({ message: err.message }); //se o servidor estiver com algum erro será apresentado por aqui
+    }
+}
+
 const topNews = async (req, res) => {
     try {
         const news = await topNewsService();
@@ -113,5 +136,6 @@ const topNews = async (req, res) => {
 export {
     create,
     findAll,
+    findById,
     topNews
 };

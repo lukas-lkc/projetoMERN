@@ -8,16 +8,16 @@ const createService = (body) => News.create(body);
 //sem o populate, o user era referenciado apenas com o ID. com o populate, todos os dados do user são trazidos
 const findAllService = (offset, limit) => News.find().sort({ _id: -1 }).skip(offset).limit(limit).populate("user");
 
-const countNews = () => News.countDocuments();
-
 const findByIdService = (id) => News.findById(id)//.populate("user");
-
-//findOne() com sort(_id: -1) trás o último item da coleção.
-const topNewsService = () => News.findOne().sort({ _id: -1 }).populate("user");
 
 const findByTitleService = (title) => News.find({
     title: { $regex: `${title || ""}`, $options: "i" }, //busca pelo title ou vazio. o option defini case insensitive
-}).sort({ _id: -1 }).populate("user");
+}).sort({ _id: -1 }).populate("user")
+
+const countNews = () => News.countDocuments();
+
+//findOne() com sort(_id: -1) trás o último item da coleção.
+const topNewsService = () => News.findOne().sort({ _id: -1 }).populate("user");
 
 export {
     createService,

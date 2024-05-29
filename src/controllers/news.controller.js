@@ -107,15 +107,20 @@ const findById = async (req, res) => {
     }
 }
 
+/*
+tentei colocar paginação, mas a pesquisa depende do query
+Quando faz a requisição com {{baseurl}}/news/search?title=teste?limit=5&offset=0, 
+o valor de title fica assim teste?limit=5&offset=0, que não é o título que você está procurando. 
+Isso porque a query string não é parseada corretamente quando usa ?. que é considerado valor de busca
+*/
 
 const findByTitle = async (req, res) => {
     try {
 
         const { title } = req.query;
+        const news = await findByTitleService( title);
 
-        const news = await findByTitleService(title);
-
-        if (news.lenght === 0) {
+        if (news.length === 0) {
             return res.status(400).send({ message: "There are no posts with this title" });
         }
 
@@ -128,9 +133,11 @@ const findByTitle = async (req, res) => {
                 banner: item.banner,
                 likes: item.likes,
                 comments: item.comments,
-                name: item.user.name,
-                userName: item.user.username,
-                userAvatar: item.user.avatar,
+                user: item.user ? {
+                    name: item.user.name,
+                    userName: item.user.username,
+                    userAvatar: item.user.avatar,
+                } : null,
             }))
         });
 

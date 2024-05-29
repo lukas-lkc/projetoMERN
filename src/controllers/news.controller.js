@@ -1,4 +1,4 @@
-import { createService, findAllService, findByIdService, countNews, topNewsService } from "../services/news.service.js"
+import { createService, findAllService, findByIdService, findByTitleService, countNews, topNewsService } from "../services/news.service.js"
 
 const create = async (req, res) => {
     try {
@@ -86,7 +86,7 @@ const findAll = async (req, res) => {
 
 const findById = async (req, res) => {
     try {
-        const {id} = req.params; //pega o user da função anterior que vem do middleware, onde está sendo verificado se o user existe
+        const { id } = req.params; //pega o user da função anterior que vem do middleware, onde está sendo verificado se o user existe
         const news = await findByIdService(id);
 
         res.send({
@@ -104,6 +104,40 @@ const findById = async (req, res) => {
         });
     } catch {
         res.status(500).send({ message: err.message }); //se o servidor estiver com algum erro será apresentado por aqui
+    }
+}
+
+
+const findByTitle = async (req, res) => {
+    try {
+
+        const { title } = req.query;
+
+        const news = await findByTitleService(title);
+
+        if (news.lenght === 0) {
+            return res.status(400).send({ message: "There are no posts with this title" });
+        }
+
+        res.send({
+            //usando map pq service está retornando um array 
+            results: news.map(item => ({
+                id: item._id,
+                title: item.title,
+                text: item.text,
+                banner: item.banner,
+                likes: item.likes,
+                comments: item.comments,
+                name: item.user.name,
+                userName: item.user.username,
+                userAvatar: item.user.avatar,
+            }))
+        });
+
+
+    } catch (err) {
+        res.status(500).send({ message: err.message }); //se o servidor estiver com algum erro será apresentado por aqui
+
     }
 }
 
@@ -137,5 +171,6 @@ export {
     create,
     findAll,
     findById,
+    findByTitle,
     topNews
 };
